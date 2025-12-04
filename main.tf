@@ -11,10 +11,24 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_s3_bucket" "mybucket" {
-  bucket = "tf-jenkins-auto-demo-001"
+# -------------------------
+# 1. Variable for Bucket Name
+# -------------------------
+variable "bucket_name" {
+  type        = string
+  description = "S3 bucket name provided by Jenkins"
 }
 
+# -------------------------
+# 2. S3 Bucket (Dynamic Name)
+# -------------------------
+resource "aws_s3_bucket" "mybucket" {
+  bucket = var.bucket_name
+}
+
+# -------------------------
+# 3. Versioning Configuration
+# -------------------------
 resource "aws_s3_bucket_versioning" "versioning" {
   bucket = aws_s3_bucket.mybucket.id
 
@@ -23,6 +37,9 @@ resource "aws_s3_bucket_versioning" "versioning" {
   }
 }
 
+# -------------------------
+# 4. Server Side Encryption (SSE)
+# -------------------------
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
   bucket = aws_s3_bucket.mybucket.id
 
