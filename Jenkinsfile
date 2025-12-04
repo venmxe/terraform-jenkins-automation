@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('aws-creds')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-creds')
+        AWS_ACCESS_KEY_ID     = credentials('aws-creds').username
+        AWS_SECRET_ACCESS_KEY = credentials('aws-creds').password
 
         // Path to your terraform.exe
         TF = "C:/TF/terraform/terraform.exe"
