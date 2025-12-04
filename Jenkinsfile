@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('aws-creds').username
-        AWS_SECRET_ACCESS_KEY = credentials('aws-creds').password
         TF = "C:/TF/terraform/terraform.exe"
     }
 
@@ -16,19 +14,25 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                bat "${TF} init"
+                withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    bat "${TF} init"
+                }
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                bat "${TF} plan"
+                withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    bat "${TF} plan"
+                }
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                bat "${TF} apply -auto-approve"
+                withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    bat "${TF} apply -auto-approve"
+                }
             }
         }
     }
