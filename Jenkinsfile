@@ -6,7 +6,7 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws-creds')
 
         // Path to your terraform.exe
-        TF = "C:/terraform/terraform.exe"
+        TF = "C:/TF/terraform/terraform.exe"
     }
 
     stages {
