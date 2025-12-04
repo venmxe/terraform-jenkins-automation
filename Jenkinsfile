@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'BUCKET_NAME', defaultValue: 'default-bucket', description: 'S3 Bucket Name')
+    }
+
     environment {
         TF = "C:/TF/terraform/terraform.exe"
     }
@@ -14,7 +18,13 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'aws-creds',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                    )
+                ]) {
                     bat "${TF} init"
                 }
             }
@@ -22,16 +32,20 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    bat "${TF} plan"
+                withCredentials([
+                    usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    bat "${TF} plan -var \"bucket_name=${BUCKET_NAME}\""   // ⭐ FIXED HERE
                 }
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    bat "${TF} apply -auto-approve"
+                withCredentials([
+                    usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    bat "${TF} apply -auto-approve -var \"bucket_name=${BUCKET_NAME}\""  // ⭐ FIXED HERE
                 }
             }
         }
