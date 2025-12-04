@@ -4,8 +4,6 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID     = credentials('aws-creds').username
         AWS_SECRET_ACCESS_KEY = credentials('aws-creds').password
-
-        // Path to your terraform.exe
         TF = "C:/TF/terraform/terraform.exe"
     }
 
@@ -18,19 +16,19 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                bat "${env.TF} init"
+                bat "${TF} init"
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                bat "${env.TF} plan"
+                bat "${TF} plan"
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                bat "${env.TF} apply -auto-approve"
+                bat "${TF} apply -auto-approve"
             }
         }
     }
